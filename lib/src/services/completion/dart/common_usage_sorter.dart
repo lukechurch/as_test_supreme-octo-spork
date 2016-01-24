@@ -24,9 +24,12 @@ import 'package:analyzer/task/dart.dart';
 import 'package:smart/completion_model/model.dart' as smart_model;
 import 'package:smart/completion_model/ast_extractors.dart' as smart_model_extractor;
 
+import 'package:logging/logging.dart' as log;
+
 part 'common_usage_sorter.g.dart';
 
 smart_model.Model model;
+log.Logger _log = new log.Logger("common_usage_sorter");
 
 
 /**
@@ -81,52 +84,63 @@ class CommonUsageSorter implements DartContributionSorter {
       CompletionRequest request, Iterable<CompletionSuggestion> suggestions) {
         var target = _getCompletionTarget(request);
 
-        log("About to _update: $request");
-        log("Model $model");
+        _log.info("About to _update: $request");
+        _log.info("Model $model");
 
         var completionScores;
         var features;
 
 
         try {
-          if (model == null) model = new smart_model.Model("/Users/lukechurch/Analysis/smart");
 
-          log("Request Target: $request");
-          log("target.containingNode: ${target.containingNode}");
-          log("target.entity: ${target.entity}");
-          log("targetRuntimeType: ${target.containingNode.runtimeType}");
+
+          if (model == null) {
+            _log.info("Initting model");
+
+            String homeDir = io.Platform.environment["HOME"];
+            String workingPath = homeDir + "/" + "feature_files";
+
+            model = new smart_model.Model(workingPath);
+            _log.info("Model init complete");
+
+          }
+
+          _log.info("Request Target: $request");
+          _log.info("target.containingNode: ${target.containingNode}");
+          _log.info("target.entity: ${target.entity}");
+          _log.info("targetRuntimeType: ${target.containingNode.runtimeType}");
 
           Stopwatch sw = new Stopwatch()..start();
 
           if (target.containingNode is MethodInvocation) {
-            log("Method invocation");
+            _log.info("Method invocation");
             var node = target.containingNode as MethodInvocation;
             features = smart_model_extractor.featuresFromMethodInvocation(node);
           } else if (target.containingNode is PropertyAccess) {
-            log("Method property access");
+            _log.info("Method property access");
             var node = target.containingNode as PropertyAccess;
             features = smart_model_extractor.featuresFromPropertyAccess(node);
           } else if (target.containingNode is PrefixedIdentifier) {
-            log("Method prefixed identifier");
+            _log.info("Method prefixed identifier");
             var node = target.containingNode as PrefixedIdentifier;
             features = smart_model_extractor.featuresFromPrefixedIdentifier(node);
           }
 
 
-          log(convert.JSON.encode(features));
+          _log.info(convert.JSON.encode(features));
 
-          log("Features for Node");
-          log(convert.JSON.encode(features));
+          _log.info("Features for Node");
+          _log.info(convert.JSON.encode(features));
 
           completionScores = model.scoreCompletionOrder(features);
 
           // log("Completion scores");
           // log(convert.JSON.encode(completionScores));
 
-          log ("Extraction complete: ${sw.elapsedMilliseconds}/ms");
+          _log.info ("Extraction complete: ${sw.elapsedMilliseconds}/ms");
 
         } catch (e, st) {
-          log ("Crash: $e \n $st");
+          _log.info ("Crash: $e \n $st");
         }
         //
         // log("Adaptive ordering completed");
@@ -139,11 +153,11 @@ class CommonUsageSorter implements DartContributionSorter {
             completionScores[k2]["Overall_PValue"]
           ));
 
-          log ("TargetType: ${features["TargetType"]}");
+          _log.info ("TargetType: ${features["TargetType"]}");
 
           completionList = completionList.reversed.toList();
-          log ("Ordered completion List");
-          log ("\n${completionList.join("\n")}");
+          _log.info ("Ordered completion List");
+          _log.info ("\n${completionList.join("\n")}");
 
 
     if (target != null) {
@@ -236,9 +250,9 @@ class _BestTypeVisitor extends GeneralizingAstVisitor {
     return null;
   }
 }
-
-log(String s) {
-  print ("${new DateTime.now().toIso8601String()}: $s");
-  // String _LOGFILE = "/Users/lukechurch/scratch-working/common_usage_sorter.log";
-  // new io.File(_LOGFILE).writeAsStringSync("${new DateTime.now().toIso8601String()}: $s \n", mode: io.FileMode.APPEND);
-}
+//
+// log(String s) {
+//   print ("${new DateTime.now().toIso8601String()}: $s");
+//   // String _LOGFILE = "/Users/lukechurch/scratch-working/common_usage_sorter.log";
+//   // new io.File(_LOGFILE).writeAsStringSync("${new DateTime.now().toIso8601String()}: $s \n", mode: io.FileMode.APPEND);
+// }
