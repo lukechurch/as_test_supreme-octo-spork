@@ -204,28 +204,50 @@ class CommonUsageSorter implements DartContributionSorter {
         _log.info("Suggestion being ordered: ${suggestionSummary}");
 
         protocol.Element element = suggestion.element;
+        int newRelevance = DART_RELEVANCE_COMMON_USAGE;
 
-        if (element != null &&
-            (element.kind == protocol.ElementKind.CONSTRUCTOR ||
-                element.kind == protocol.ElementKind.FIELD ||
-                element.kind == protocol.ElementKind.GETTER ||
-                element.kind == protocol.ElementKind.METHOD ||
-                element.kind == protocol.ElementKind.SETTER) &&
-            suggestion.kind == CompletionSuggestionKind.INVOCATION &&
-            suggestion.declaringType == typeName) {
+        if (element == null) {
+          _log.info("MATCH FAIL: element was null");
+          suggestion.relevance = newRelevance;
+          continue;
+        }
+
+        if (element.kind != protocol.ElementKind.CONSTRUCTOR &&
+                element.kind != protocol.ElementKind.FIELD &&
+                element.kind != protocol.ElementKind.GETTER &&
+                element.kind != protocol.ElementKind.METHOD &&
+                element.kind != protocol.ElementKind.SETTER) {
+                  _log.info("Element type can't be matched: ${element}");
+                  suggestion.relevance = newRelevance;
+                  continue;
+                }
+
+                if (suggestion.kind != CompletionSuggestionKind.INVOCATION) {
+                  _log.info("Suggestion kind was not supported: ${suggestion.kind}");
+                  suggestion.relevance = newRelevance;
+                  continue;
+                }
+
+                if (suggestion.declaringType != typeName) {
+                  _log.info("Suggestion declaring type not matched: ${suggestion.declaringType}, $typeName");
+                  suggestion.relevance = newRelevance;
+                  continue;
+                                }
+
+
           int index = order.indexOf(suggestion.completion);
           if (index != -1) {
             int newRelevance = DART_RELEVANCE_COMMON_USAGE - index;
             _log.info("Updating relevance: ${suggestion.completion}: ${suggestion.relevance} -> $newRelevance");
             suggestion.relevance = newRelevance;
-          } else {
-            int newRelevance = DART_RELEVANCE_COMMON_USAGE;
-            _log.info("Completion not found: ${suggestion.completion}: ${suggestion.completion} -> $newRelevance");
+            continue;
+          }
+
+          else {
+            _log.info("Completion not found: ${suggestion.completion}: ${suggestion.relevance} -> $newRelevance");
             suggestion.relevance = newRelevance;
           }
-        } else {
-          _log.info("Element type can't be matched: ${element}");
-        }
+
       }
   }
 }
