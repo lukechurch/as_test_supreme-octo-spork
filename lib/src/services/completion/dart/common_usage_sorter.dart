@@ -133,6 +133,10 @@ class CommonUsageSorter implements DartContributionSorter {
             _log.info("Method prefixed identifier");
             var node = target.containingNode as PrefixedIdentifier;
             features = smart_model_extractor.featuresFromPrefixedIdentifier(node);
+          } else {
+            // Completion on unworkable note
+            _log.info("Target node type not supported");
+            return new Future.value();
           }
 
           _log.info("Features for Node computed: ${sw.elapsedMilliseconds}");
@@ -194,6 +198,7 @@ class CommonUsageSorter implements DartContributionSorter {
     String typeName = type.name;
       for (CompletionSuggestion suggestion in suggestions) {
         protocol.Element element = suggestion.element;
+
         if (element != null &&
             (element.kind == protocol.ElementKind.CONSTRUCTOR ||
                 element.kind == protocol.ElementKind.FIELD ||
@@ -209,9 +214,11 @@ class CommonUsageSorter implements DartContributionSorter {
             suggestion.relevance = newRelevance;
           } else {
             _log.info("Completion not found in order: ${suggestion.completion}");
+            int newRelevance = DART_RELEVANCE_COMMON_USAGE;
+            suggestion.relevance = newRelevance;
           }
         } else {
-          _log.info("Element type can't be completed: ${element}");
+          _log.info("Element type can't be matched: ${element}");
         }
       }
   }
