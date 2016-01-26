@@ -197,6 +197,8 @@ class CommonUsageSorter implements DartContributionSorter {
       Iterable<CompletionSuggestion> suggestions, List<String> order) {
     String typeName = type.name;
       for (CompletionSuggestion suggestion in suggestions) {
+        _log.info("Suggestion being ordered: ${suggestion}");
+
         protocol.Element element = suggestion.element;
 
         if (element != null &&
@@ -213,8 +215,8 @@ class CommonUsageSorter implements DartContributionSorter {
             _log.info("Updating relevance: ${suggestion.relevance} -> $newRelevance");
             suggestion.relevance = newRelevance;
           } else {
-            _log.info("Completion not found in order: ${suggestion.completion}");
             int newRelevance = DART_RELEVANCE_COMMON_USAGE;
+            _log.info("Completion not found in order: ${suggestion.completion} -> $newRelevance");
             suggestion.relevance = newRelevance;
           }
         } else {
