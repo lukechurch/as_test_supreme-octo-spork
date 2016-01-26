@@ -91,6 +91,7 @@ class CommonUsageSorter implements DartContributionSorter {
   void _update(
       CompletionRequest request, Iterable<CompletionSuggestion> suggestions) {
         var target = _getCompletionTarget(request);
+        _log.info("completionTarget: $target");
 
         _log.info("About to _update: $request");
         _log.info("Model $model");
@@ -167,6 +168,10 @@ class CommonUsageSorter implements DartContributionSorter {
 
           _log.info ("Ordered completion List:\n"
             "${convert.JSON.encode(completionList)}");
+
+          _log.info ("Suggestions List:\n"
+            "${convert.JSON.encode(suggestions)}");
+
     if (target != null) {
       var visitor = new _BestTypeVisitor(target.entity);
       DartType type = target.containingNode.accept(visitor);
