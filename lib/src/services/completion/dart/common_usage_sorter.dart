@@ -24,13 +24,21 @@ import 'package:analyzer/task/dart.dart';
 import 'package:smart/completion_model/model.dart' as smart_model;
 import 'package:smart/completion_model/ast_extractors.dart' as smart_model_extractor;
 
-import 'package:logging/logging.dart' as log;
+import 'package:smart/completion_server/log_client.dart' as log;
+
+// import 'package:logging/logging.dart' as log;
 
 part 'common_usage_sorter.g.dart';
 
 smart_model.Model model;
-log.Logger _log = new log.Logger("common_usage_sorter");
 
+// log.Logger _log = new log.Logger("common_usage_sorter");
+
+class _log {
+  static info(String l) {
+    log.info("common_usage_sorter", l);
+  }
+}
 
 /**
  * A computer for adjusting the relevance of completions computed by others
