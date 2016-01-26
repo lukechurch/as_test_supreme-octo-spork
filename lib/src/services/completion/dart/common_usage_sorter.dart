@@ -135,10 +135,7 @@ class CommonUsageSorter implements DartContributionSorter {
             features = smart_model_extractor.featuresFromPrefixedIdentifier(node);
           }
 
-
-          _log.info(convert.JSON.encode(features));
-
-          _log.info("Features for Node");
+          _log.info("Features for Node computed: ${sw.elapsedMilliseconds}");
           _log.info(convert.JSON.encode(features));
 
           completionScores = model.scoreCompletionOrder(features);
