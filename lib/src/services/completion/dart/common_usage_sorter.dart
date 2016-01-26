@@ -164,10 +164,9 @@ class CommonUsageSorter implements DartContributionSorter {
           _log.info ("TargetType: ${features["TargetType"]}");
 
           completionList = completionList.reversed.toList();
-          _log.info ("Ordered completion List");
-          _log.info ("\n${completionList.join("\n")}");
 
-
+          _log.info ("Ordered completion List:\n"
+            "${convert.JSON.encode(completionList)}");
     if (target != null) {
       var visitor = new _BestTypeVisitor(target.entity);
       DartType type = target.containingNode.accept(visitor);
