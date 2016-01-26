@@ -61,7 +61,7 @@ class CommonUsageSorter implements DartContributionSorter {
   @override
   Future sort(DartCompletionRequest request,
       Iterable<CompletionSuggestion> suggestions) async {
-    _update(request, suggestions);
+    await _update(request, suggestions);
     return new Future.value();
   }
 
@@ -88,7 +88,7 @@ class CommonUsageSorter implements DartContributionSorter {
    * The compilation unit and completion node
    * in the given completion context may not be resolved.
    */
-  void _update(
+  Future _update(
       CompletionRequest request, Iterable<CompletionSuggestion> suggestions) async {
         var target = _getCompletionTarget(request);
         _log.info("completionTarget: $target");
