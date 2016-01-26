@@ -35,8 +35,8 @@ smart_model.Model model;
 // log.Logger _log = new log.Logger("common_usage_sorter");
 
 class _log {
-  static info(String l) {
-    log.info("common_usage_sorter", l);
+  static Future info(String l) {
+    return log.info("common_usage_sorter", l);
   }
 }
 
@@ -60,7 +60,7 @@ class CommonUsageSorter implements DartContributionSorter {
 
   @override
   Future sort(DartCompletionRequest request,
-      Iterable<CompletionSuggestion> suggestions) {
+      Iterable<CompletionSuggestion> suggestions) async {
     _update(request, suggestions);
     return new Future.value();
   }
@@ -89,7 +89,7 @@ class CommonUsageSorter implements DartContributionSorter {
    * in the given completion context may not be resolved.
    */
   void _update(
-      CompletionRequest request, Iterable<CompletionSuggestion> suggestions) {
+      CompletionRequest request, Iterable<CompletionSuggestion> suggestions) async {
         var target = _getCompletionTarget(request);
         _log.info("completionTarget: $target");
 
@@ -146,7 +146,7 @@ class CommonUsageSorter implements DartContributionSorter {
           _log.info ("Extraction complete: ${sw.elapsedMilliseconds}/ms");
 
         } catch (e, st) {
-          _log.info ("Crash: $e \n $st");
+          await _log.info ("Crash: $e \n $st");
         }
         //
         // log("Adaptive ordering completed");
