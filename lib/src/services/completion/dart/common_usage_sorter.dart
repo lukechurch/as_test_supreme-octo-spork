@@ -171,7 +171,7 @@ class CommonUsageSorter implements DartContributionSorter {
             "${convert.JSON.encode(completionList)}");
 
           _log.info ("Suggestions List:\n"
-            "${convert.JSON.encode(suggestions)}");
+            "${convert.JSON.encode(suggestions.map((s) => s.completion).toList())}");
 
     if (target != null) {
       var visitor = new _BestTypeVisitor(target.entity);
@@ -197,7 +197,11 @@ class CommonUsageSorter implements DartContributionSorter {
       Iterable<CompletionSuggestion> suggestions, List<String> order) {
     String typeName = type.name;
       for (CompletionSuggestion suggestion in suggestions) {
-        _log.info("Suggestion being ordered: ${suggestion}");
+        String suggestionSummary = convert.JSON.encode({
+          "kind" : suggestion.kind,
+          "completion" : suggestion.completion,
+        });
+        _log.info("Suggestion being ordered: ${suggestionSummary}");
 
         protocol.Element element = suggestion.element;
 
@@ -212,11 +216,11 @@ class CommonUsageSorter implements DartContributionSorter {
           int index = order.indexOf(suggestion.completion);
           if (index != -1) {
             int newRelevance = DART_RELEVANCE_COMMON_USAGE - index;
-            _log.info("Updating relevance: ${suggestion.relevance} -> $newRelevance");
+            _log.info("Updating relevance: ${suggestion.completion}: ${suggestion.relevance} -> $newRelevance");
             suggestion.relevance = newRelevance;
           } else {
             int newRelevance = DART_RELEVANCE_COMMON_USAGE;
-            _log.info("Completion not found in order: ${suggestion.completion} -> $newRelevance");
+            _log.info("Completion not found: ${suggestion.completion}: ${suggestion.completion} -> $newRelevance");
             suggestion.relevance = newRelevance;
           }
         } else {
