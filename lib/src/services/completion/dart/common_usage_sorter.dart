@@ -207,8 +207,14 @@ class CommonUsageSorter implements DartContributionSorter {
             suggestion.declaringType == typeName) {
           int index = order.indexOf(suggestion.completion);
           if (index != -1) {
-            suggestion.relevance = DART_RELEVANCE_COMMON_USAGE - index;
+            int newRelevance = DART_RELEVANCE_COMMON_USAGE - index;
+            _log.info("Updating relevance: ${suggestion.relevance} -> $newRelevance");
+            suggestion.relevance = newRelevance;
+          } else {
+            _log.info("Completion not found in order: ${suggestion.completion}");
           }
+        } else {
+          _log.info("Element type can't be completed: ${element}");
         }
       }
   }
