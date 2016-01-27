@@ -215,12 +215,12 @@ class CommonUsageSorter implements DartContributionSorter {
         continue;
       }
 
-      if (suggestion.declaringType != typeName) {
-        _log.info(
-            "Suggestion declaring type not matched: ${suggestion.declaringType}, $typeName");
-        suggestion.relevance = newRelevance;
-        continue;
-      }
+      // if (suggestion.declaringType != typeName) {
+      //   _log.info(
+      //       "Suggestion declaring type not matched: ${suggestion.declaringType}, $typeName");
+      //   suggestion.relevance = newRelevance;
+      //   continue;
+      // }
 
       int index = order.indexOf(suggestion.completion);
       if (index != -1) {
