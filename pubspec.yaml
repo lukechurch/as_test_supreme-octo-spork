@@ -7,7 +7,8 @@ environment:
   sdk: '>=1.12.0 <2.0.0'
 dependencies:
   smart:
-    git: https://github.com/lukechurch/sm_test_supreme-octo-spork.git
+    # path: /Users/lukechurch/GitRepos/sm_test_supreme-octo-spork
+    git: https://github.com/dart-lang/smart.git
   analyzer: ^0.27.0
   args: '>=0.13.0 <0.14.0'
   dart_style: '>=0.2.0 <0.3.0'

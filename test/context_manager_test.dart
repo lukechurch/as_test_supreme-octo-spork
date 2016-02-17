@@ -339,7 +339,7 @@ linter:
     // * from `_embedder.yaml`:
     expect(context.analysisOptions.strongMode, isTrue);
     expect(context.analysisOptions.enableSuperMixins, isTrue);
-    expect(context.analysisOptions.enableAsync, isFalse);
+    // expect(context.analysisOptions.enableAsync, isFalse);
     // * from `.analysis_options`:
     expect(context.analysisOptions.enableGenericMethods, isTrue);
     // * verify tests are excluded
