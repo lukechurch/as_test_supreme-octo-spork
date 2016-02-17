@@ -129,7 +129,7 @@ class CommonUsageSorter implements DartContributionSorter {
           }
 
           log("Features for Node");
-          log(convert.JSON.encode(features));
+          log(features.toJsonString());
 
           completionScores = model.scoreCompletionOrder(features);
 
