@@ -99,13 +99,16 @@ class CommonUsageSorter implements DartContributionSorter {
           String homeDir = io.Platform.environment["HOME"];
           String workingPath = path.join(homeDir, "feature_files");
 
-          smart_feature_server.FeatureServer featureServer = new
-            smart_feature_server.FeatureServer.fromPaths(
-              path.join(workingPath, "completion_count.json"),
-              path.join(workingPath, "packed_model.smart_complete")
-            );
 
-          if (model == null) model = new smart_model.Model(featureServer);
+          if (model == null) {
+            smart_feature_server.FeatureServer featureServer = new
+              smart_feature_server.FeatureServer.fromPaths(
+                path.join(workingPath, "completion_count.json"),
+                path.join(workingPath, "packed_model.smart_complete")
+              );
+
+            model = new smart_model.Model(featureServer);
+          }
 
           log("Request Target: $request");
           log("target.containingNode: ${target.containingNode}");
